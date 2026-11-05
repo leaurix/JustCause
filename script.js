@@ -14,19 +14,20 @@ function reveal(){
     setTimeout(()=>c.classList.add("on"),r*55+x*6+Math.random()*250)});
 }
 
-const song=document.getElementById("song"),toggle=document.getElementById("toggle");
-function noSong(e){console.warn("song.mp3 could not play:",e||song.error);
-  toggle.disabled=true;toggle.textContent="Song unavailable";}
-song.addEventListener("error",()=>noSong());
-if(song.error)noSong(); /* error may fire before this script runs */
-function playSong(){song.play().catch(noSong)}
-function setBtn(){const p=!song.paused;toggle.textContent=p?"Pause our song":"Play our song";toggle.setAttribute("aria-pressed",p)}
-song.addEventListener("play",setBtn);song.addEventListener("pause",setBtn);
-toggle.addEventListener("click",()=>{song.paused?playSong():song.pause()});
+/* song: YouTube player, hidden, loops, starts on the gate tap */
+const VID="mE_XFgyPhJU";
+let yt=null,ytReady=false,wantPlay=false;
+window.onYouTubeIframeAPIReady=function(){
+  yt=new YT.Player("yt",{width:200,height:200,videoId:VID,
+    playerVars:{autoplay:0,controls:0,loop:1,playlist:VID,playsinline:1,rel:0},
+    events:{onReady:()=>{ytReady=true;if(wantPlay)playSong()}}});
+};
+if(window.YT&&YT.Player)onYouTubeIframeAPIReady();
+function playSong(){wantPlay=true;if(!ytReady)return;yt.unMute();yt.setVolume(100);yt.playVideo()}
 
 document.getElementById("open").addEventListener("click",()=>{
   document.getElementById("gate").classList.add("gone");
-  if(!song.error)playSong();
+  playSong();
   reveal();burst();
 });
 

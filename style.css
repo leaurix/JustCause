@@ -47,3 +47,4 @@ button:active,.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(
 @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.08)}30%{transform:scale(1)}45%{transform:scale(1.05)}}
 .gate-in p{margin:0;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){#open{animation:none}pre#art i{transition:none}}
+#yt{position:fixed;left:-9999px;top:0;width:200px;height:200px;opacity:0;pointer-events:none}
