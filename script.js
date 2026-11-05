@@ -15,15 +15,18 @@ function reveal(){
 }
 
 const song=document.getElementById("song"),toggle=document.getElementById("toggle");
-let hasSong=true;
-song.addEventListener("error",()=>{hasSong=false;toggle.hidden=true});
+function noSong(e){console.warn("song.mp3 could not play:",e||song.error);
+  toggle.disabled=true;toggle.textContent="Song unavailable";}
+song.addEventListener("error",()=>noSong());
+if(song.error)noSong(); /* error may fire before this script runs */
+function playSong(){song.play().catch(noSong)}
 function setBtn(){const p=!song.paused;toggle.textContent=p?"Pause our song":"Play our song";toggle.setAttribute("aria-pressed",p)}
 song.addEventListener("play",setBtn);song.addEventListener("pause",setBtn);
-toggle.addEventListener("click",()=>{song.paused?song.play().catch(()=>{}):song.pause()});
+toggle.addEventListener("click",()=>{song.paused?playSong():song.pause()});
 
 document.getElementById("open").addEventListener("click",()=>{
   document.getElementById("gate").classList.add("gone");
-  if(hasSong)song.play().catch(()=>{});
+  if(!song.error)playSong();
   reveal();burst();
 });
 
