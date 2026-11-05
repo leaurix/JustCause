@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For Esther</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&family=Nunito:wght@400;700&family=Courier+Prime:wght@700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="gate" role="dialog" aria-label="Open your surprise">
+  <div class="gate-in">
+    <div class="eyebrow">a little surprise</div>
+    <button id="open" type="button" aria-label="Open the surprise for Esther">
+      <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.6 4.5c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.6 0 5.7 3.9 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg>
+      For Esther<br>tap me
+    </button>
+    <p>turn your sound on</p>
+  </div>
+</div>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<main>
+  <header>
+    <div class="eyebrow">made just for you</div>
+    <h1>Hi, <span>Esther</span></h1>
+  </header>
+
+  <figure class="frame" style="margin:0">
+    <pre id="art" aria-label="A portrait of Esther drawn with the letters of her name"></pre>
+    <figcaption class="caption">you, spelled out letter by letter</figcaption>
+  </figure>
+
+  <div class="player">
+    <button id="toggle" type="button" aria-pressed="false">Play our song</button>
+    <a class="btn" id="spot" href="https://open.spotify.com/search/Good%20Things%20HAYD" target="_blank" rel="noopener">Good Things on Spotify</a>
+  </div>
+
+  <p class="letter">You make the ordinary days feel soft and bright. The lazy afternoons, the silly faces, the hand hearts. Every little thing with you is my favorite thing.</p>
+
+  <section class="notes" aria-label="Little notes">
+    <div class="note"><b>Your smile</b>It fixes my worst days in about two seconds.</div>
+    <div class="note"><b>Your pout</b>Cutest face in the whole world. Not up for debate.</div>
+    <div class="note"><b>You</b>My good thing, my calm place, my person.</div>
+  </section>
+
+  <div class="sign">Love you always ♥</div>
+</main>
+
+<audio id="song" src="song.mp3" preload="auto" loop></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
