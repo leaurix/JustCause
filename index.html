@@ -37,7 +37,50 @@
     <a class="btn" id="spot" href="https://open.spotify.com/search/Good%20Things%20HAYD" target="_blank" rel="noopener">Good Things on Spotify</a>
   </div>
 
-  <p class="letter">You make the ordinary days feel soft and bright. The lazy afternoons, the silly faces, the hand hearts. Every little thing with you is my favorite thing.</p>
+  <section class="counters" aria-label="Our numbers">
+    <div class="count"><b id="together">0</b><span>days together</span></div>
+    <div class="count"><b id="bday">0</b><span id="bdayLbl">days until your birthday</span></div>
+  </section>
+
+  <section class="block">
+    <h2>Make a wish</h2>
+    <p class="hint" id="cakeHint">tap the candles to blow them out</p>
+    <svg id="cake" viewBox="0 0 220 210" role="img" aria-label="A strawberry birthday cake with three candles">
+      <ellipse cx="110" cy="192" rx="96" ry="12" fill="#fff" stroke="#1e2a4a" stroke-width="3"/>
+      <rect x="28" y="128" width="164" height="60" rx="14" fill="#f7a8b5" stroke="#1e2a4a" stroke-width="3"/>
+      <rect x="50" y="86" width="120" height="48" rx="12" fill="#fff7f8" stroke="#1e2a4a" stroke-width="3"/>
+      <path d="M50 100q10 14 20 0t20 0t20 0t20 0t20 0t20 0" fill="none" stroke="#e2334a" stroke-width="5" stroke-linecap="round"/>
+      <path d="M28 142q14 16 27 0t27 0t27 0t27 0t27 0t27 0" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+      <g fill="#1e2a4a"><circle cx="60" cy="168" r="2.5"/><circle cx="92" cy="160" r="2.5"/><circle cx="128" cy="170" r="2.5"/><circle cx="162" cy="162" r="2.5"/><circle cx="76" cy="118" r="2"/><circle cx="144" cy="120" r="2"/></g>
+      <g class="candle" data-i="0"><rect x="72" y="50" width="12" height="38" rx="4" fill="#fff" stroke="#1e2a4a" stroke-width="2.5"/><path d="M72 60l12 6M72 72l12 6" stroke="#e2334a" stroke-width="3"/><g class="flame"><ellipse cx="78" cy="40" rx="9" ry="12" fill="#ffd36b" opacity=".45"/><path d="M78 28q8 10 0 18q-8-8 0-18z" fill="#ff9f43"/></g></g>
+      <g class="candle" data-i="1"><rect x="104" y="44" width="12" height="44" rx="4" fill="#fff" stroke="#1e2a4a" stroke-width="2.5"/><path d="M104 54l12 6M104 66l12 6M104 78l12 6" stroke="#3e9b5a" stroke-width="3"/><g class="flame"><ellipse cx="110" cy="34" rx="9" ry="12" fill="#ffd36b" opacity=".45"/><path d="M110 22q8 10 0 18q-8-8 0-18z" fill="#ff9f43"/></g></g>
+      <g class="candle" data-i="2"><rect x="136" y="50" width="12" height="38" rx="4" fill="#fff" stroke="#1e2a4a" stroke-width="2.5"/><path d="M136 60l12 6M136 72l12 6" stroke="#e2334a" stroke-width="3"/><g class="flame"><ellipse cx="142" cy="40" rx="9" ry="12" fill="#ffd36b" opacity=".45"/><path d="M142 28q8 10 0 18q-8-8 0-18z" fill="#ff9f43"/></g></g>
+    </svg>
+  </section>
+
+  <section class="block">
+    <h2>Love jar</h2>
+    <button id="jar" class="jar" type="button" aria-label="Pull a love note from the jar">
+      <svg viewBox="0 0 120 140" width="120" height="140" aria-hidden="true">
+        <rect x="30" y="6" width="60" height="16" rx="5" fill="#e2334a" stroke="#1e2a4a" stroke-width="3"/>
+        <path d="M34 22h52v10q20 8 20 34v50q0 18-18 18H32q-18 0-18-18V66q0-26 20-34z" fill="#fff7f8" fill-opacity=".85" stroke="#1e2a4a" stroke-width="3"/>
+        <g fill="#e2334a"><path d="M40 92c-6-6 2-12 6-6 4-6 12 0 6 6l-6 6z"/><path d="M70 106c-6-6 2-12 6-6 4-6 12 0 6 6l-6 6z"/><path d="M56 74c-6-6 2-12 6-6 4-6 12 0 6 6l-6 6z"/></g>
+        <g fill="#f7a8b5"><path d="M74 80c-5-5 2-10 5-5 3-5 10 0 5 5l-5 5z"/><path d="M30 112c-5-5 2-10 5-5 3-5 10 0 5 5l-5 5z"/><path d="M52 116c-5-5 2-10 5-5 3-5 10 0 5 5l-5 5z"/></g>
+        <path d="M24 70q0-14 10-20" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
+      </svg>
+    </button>
+    <div id="reason" class="reason" aria-live="polite">tap the jar for a little note</div>
+  </section>
+
+  <section class="block">
+    <h2>A letter for you</h2>
+    <button id="env" class="env" type="button" aria-expanded="false" aria-controls="letter">
+      <span class="env-paper"></span><span class="env-flap"></span><span class="env-front"></span>
+      <span class="env-seal" aria-hidden="true">♥</span>
+    </button>
+    <p class="hint" id="envHint">tap to open</p>
+    <p class="letter" id="letter" hidden>You make the ordinary days feel soft and bright. The lazy afternoons, the silly faces, the hand hearts. Every little thing with you is my favorite thing.</p>
+  </section>
 
   <section class="notes" aria-label="Little notes">
     <div class="note"><b>Your smile</b>It fixes my worst days in about two seconds.</div>
@@ -48,6 +91,19 @@
   <div class="sign">Love you always ♥</div>
 </main>
 
+<button id="buddy" type="button" aria-label="Say hi to the strawberry">
+  <svg viewBox="0 0 80 90" width="72" height="81" aria-hidden="true">
+    <path d="M12 30q-4 30 28 54q32-24 28-54q-28-12-56 0z" fill="#e2334a" stroke="#1e2a4a" stroke-width="3"/>
+    <path d="M20 26q8-14 20-6q12-8 20 6q-8 6-20 2q-12 4-20-2z" fill="#3e9b5a" stroke="#1e2a4a" stroke-width="3"/>
+    <path d="M40 20v-10" stroke="#3e9b5a" stroke-width="4" stroke-linecap="round"/>
+    <g class="eyes" fill="#1e2a4a"><ellipse cx="30" cy="46" rx="3.5" ry="4.5"/><ellipse cx="50" cy="46" rx="3.5" ry="4.5"/></g>
+    <circle cx="23" cy="54" r="4" fill="#f7a8b5"/><circle cx="57" cy="54" r="4" fill="#f7a8b5"/>
+    <path d="M35 54q5 5 10 0" stroke="#1e2a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <g fill="#ffe9ee"><circle cx="26" cy="64" r="1.6"/><circle cx="40" cy="70" r="1.6"/><circle cx="54" cy="64" r="1.6"/><circle cx="34" cy="38" r="1.4"/><circle cx="48" cy="36" r="1.4"/></g>
+  </svg>
+</button>
+<div id="bubble" aria-live="polite"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
 <div id="yt" aria-hidden="true"></div>
 <script src="https://www.youtube.com/iframe_api"></script>
 

@@ -58,3 +58,76 @@ function tick(t){
   ctx.globalAlpha=1;parts=parts.filter(p=>p.y>-60);
   requestAnimationFrame(tick)}
 requestAnimationFrame(tick);
+
+/* ---------- cute extras ---------- */
+const $=id=>document.getElementById(id);
+const DAY=864e5,today=new Date();today.setHours(0,0,0,0);
+
+/* counters: together since Sep 1 2026, birthday Nov 10 */
+const since=new Date(2026,8,1);
+$("together").textContent=Math.max(0,Math.round((today-since)/DAY));
+let bd=new Date(today.getFullYear(),10,10);if(bd<today)bd=new Date(today.getFullYear()+1,10,10);
+const left=Math.round((bd-today)/DAY);
+if(left===0){$("bday").textContent="Today!";$("bdayLbl").textContent="happy birthday, my love"}
+else{$("bday").textContent=left;$("bdayLbl").textContent=left===1?"day until your birthday":"days until your birthday"}
+
+/* effects canvas on top: tap hearts, confetti, sparkles */
+const fx=$("fx"),fc=fx.getContext("2d");let fxp=[];
+function fxSize(){fx.width=innerWidth*dpr;fx.height=innerHeight*dpr;fc.setTransform(dpr,0,0,dpr,0,0)}
+fxSize();addEventListener("resize",fxSize);
+function fheart(x,y,s,c){fc.fillStyle=c;fc.beginPath();fc.moveTo(x,y+s*.3);
+  fc.bezierCurveTo(x,y,x-s*.5,y,x-s*.5,y+s*.3);fc.bezierCurveTo(x-s*.5,y+s*.6,x,y+s*.8,x,y+s);
+  fc.bezierCurveTo(x,y+s*.8,x+s*.5,y+s*.6,x+s*.5,y+s*.3);fc.bezierCurveTo(x+s*.5,y,x,y,x,y+s*.3);fc.fill()}
+function star(x,y,s,c){fc.fillStyle=c;fc.beginPath();for(let i=0;i<8;i++){const r=i%2?s*.25:s,a=i*Math.PI/4;fc.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r)}fc.fill()}
+const COLS=["#e2334a","#f7a8b5","#ffd36b","#3e9b5a","#ec8a9a","#fff"];
+function hearts(x,y,n){if(reduce)return;for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=1+Math.random()*3;
+  fxp.push({k:"h",x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2,s:8+Math.random()*10,c:COLS[i%2],l:1})}}
+function confetti(n){if(reduce)return;for(let i=0;i<n;i++)fxp.push({k:"c",x:Math.random()*innerWidth,y:-20-Math.random()*200,
+  vx:(Math.random()-.5)*2,vy:2+Math.random()*3,s:6+Math.random()*6,r:Math.random()*6,c:COLS[i%COLS.length],l:1})}
+function sparkle(x,y){if(reduce)return;fxp.push({k:"s",x,y,vx:(Math.random()-.5),vy:-.5-Math.random(),s:3+Math.random()*4,c:COLS[2+(Math.random()*2|0)*2],l:1})}
+(function fxTick(){fc.clearRect(0,0,innerWidth,innerHeight);
+  for(const p of fxp){p.x+=p.vx;p.y+=p.vy;
+    if(p.k==="h"){p.vy+=.08;p.l-=.015;fc.globalAlpha=Math.max(p.l,0);fheart(p.x,p.y,p.s,p.c)}
+    else if(p.k==="c"){p.r+=.1;p.x+=Math.sin(p.r)*.6;if(p.y>innerHeight+20)p.l=0;fc.globalAlpha=1;fc.save();fc.translate(p.x,p.y);fc.rotate(p.r);fc.fillStyle=p.c;fc.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);fc.restore()}
+    else{p.l-=.03;fc.globalAlpha=Math.max(p.l,0);star(p.x,p.y,p.s,p.c)}}
+  fc.globalAlpha=1;fxp=fxp.filter(p=>p.l>0);requestAnimationFrame(fxTick)})();
+
+/* tap anywhere: little heart pop; mouse: sparkle trail */
+addEventListener("pointerdown",e=>{if(!e.target.closest("#gate"))hearts(e.clientX,e.clientY,7)});
+let lastS=0;addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;const t=performance.now();if(t-lastS>40){sparkle(e.clientX,e.clientY);lastS=t}});
+
+/* opening the gate also drops confetti */
+$("open").addEventListener("click",()=>confetti(120));
+
+/* cake: blow out candles */
+const candles=[...document.querySelectorAll(".candle")];
+candles.forEach(c=>c.addEventListener("click",e=>{e.stopPropagation();if(c.classList.contains("out"))return;
+  c.classList.add("out");const r=c.getBoundingClientRect();sparkle(r.left+r.width/2,r.top);sparkle(r.left+r.width/2,r.top+6);
+  const lit=candles.filter(x=>!x.classList.contains("out")).length;
+  if(lit){$("cakeHint").textContent=lit+" more to go"}
+  else{$("cakeHint").textContent="Wish made! I hope every bit of it comes true ♥";confetti(160);
+    setTimeout(()=>{candles.forEach(x=>x.classList.remove("out"));$("cakeHint").textContent="tap the candles to make another wish"},6000)}}));
+
+/* love jar */
+const REASONS=["The way you laugh at your own jokes before you finish them.","Your hand hearts. Every single one.",
+  "You make lazy afternoons feel like a holiday.","Your pout. Still undefeated.","You are my favorite notification.",
+  "How you make ordinary days feel soft and bright.","Your smile fixes everything in about two seconds.",
+  "You are my calm place.","Strawberry picnics with you are the best plans ever.","You make me want to be better, every day.",
+  "Even your silly faces are cute.","You are my good thing."];
+let bag=[];
+$("jar").addEventListener("click",e=>{if(!bag.length)bag=REASONS.slice().sort(()=>Math.random()-.5);
+  const j=$("jar"),r=$("reason");j.classList.remove("wiggle");void j.offsetWidth;j.classList.add("wiggle");
+  r.textContent=bag.pop();r.classList.remove("pop");void r.offsetWidth;r.classList.add("pop");
+  const b=j.getBoundingClientRect();hearts(b.left+b.width/2,b.top+20,10)});
+
+/* envelope */
+$("env").addEventListener("click",()=>{const env=$("env"),L=$("letter");const open=!env.classList.contains("open");
+  env.classList.toggle("open",open);env.setAttribute("aria-expanded",open);$("envHint").textContent=open?"tap to close":"tap to open";
+  if(open){setTimeout(()=>{L.hidden=false;L.classList.add("show")},500);const b=env.getBoundingClientRect();hearts(b.left+b.width/2,b.top,12)}
+  else{L.hidden=true;L.classList.remove("show")}});
+
+/* strawberry buddy */
+const LINES=["Hi Esther!","You look cute today.","He really likes you, you know.","Boop!","Have you smiled yet?",
+  "Strawberry hug!","You are berry special.","Go open the envelope!","Try the love jar!"];
+let bt;$("buddy").addEventListener("click",()=>{const b=$("bubble");b.textContent=LINES[Math.random()*LINES.length|0];b.classList.add("on");
+  clearTimeout(bt);bt=setTimeout(()=>b.classList.remove("on"),2600)});

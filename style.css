@@ -48,3 +48,51 @@ button:active,.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(
 .gate-in p{margin:0;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){#open{animation:none}pre#art i{transition:none}}
 #yt{position:fixed;left:-9999px;top:0;width:200px;height:200px;opacity:0;pointer-events:none}
+
+/* cute extras */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:4}
+h2{font-family:var(--display);font-weight:800;color:var(--berry);font-size:1.7rem;margin:0}
+.hint{margin:4px 0 10px;color:var(--muted);font-size:.92rem}
+.block{display:flex;flex-direction:column;align-items:center;width:100%}
+.counters{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.count{background:var(--paper);border:2px solid var(--navy);border-radius:18px;padding:12px 22px;box-shadow:4px 4px 0 var(--berry-soft);min-width:150px}
+.count b{display:block;font-family:var(--display);font-size:2.3rem;color:var(--berry);line-height:1.1}
+.count span{font-size:.9rem;color:var(--muted)}
+#cake{width:min(260px,80vw);height:auto;overflow:visible}
+.candle{cursor:pointer}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flick .5s ease-in-out infinite alternate}
+.candle.out .flame{animation:puff .4s forwards}
+@keyframes flick{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.08,.95) rotate(3deg)}}
+@keyframes puff{to{transform:scale(0) translateY(-10px);opacity:0}}
+.jar{background:none;border:0;box-shadow:none;padding:0}
+.jar:active{transform:none;box-shadow:none}
+.jar.wiggle svg{animation:wiggle .5s}
+@keyframes wiggle{25%{transform:rotate(-8deg)}50%{transform:rotate(7deg)}75%{transform:rotate(-4deg)}}
+.reason{margin-top:12px;background:var(--paper);border:2px dashed var(--berry);border-radius:14px;padding:12px 18px;max-width:22em;min-height:3em;font-size:1.02rem}
+.reason.pop{animation:pop .4s}
+@keyframes pop{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+.env{position:relative;width:240px;height:156px;padding:0;border-radius:10px;background:#f7a8b5;overflow:visible;margin-top:30px;transition:margin .5s,transform .1s}
+.env.open{margin-top:100px}
+.env:active{transform:translate(2px,2px)}
+.env-paper{position:absolute;left:14px;right:14px;top:10px;height:120px;background:var(--paper);border:2px solid var(--navy);border-radius:8px;transition:transform .6s .3s;
+  background-image:repeating-linear-gradient(transparent 0 18px,#f7a8b5 18px 19px)}
+.env-front{position:absolute;inset:0;border-radius:8px;background:#f7a8b5;clip-path:polygon(0 30%,50% 72%,100% 30%,100% 100%,0 100%)}
+.env-flap{position:absolute;left:0;right:0;top:0;height:90px;background:#ec8a9a;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .5s;z-index:2}
+.env-seal{position:absolute;left:50%;top:66px;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:var(--berry);color:#fff;
+  display:grid;place-items:center;font-size:1.1rem;z-index:3;border:2px solid var(--navy);transition:opacity .3s}
+.env.open .env-flap{transform:rotateX(180deg);z-index:0}
+.env.open .env-seal{opacity:0}
+.env.open .env-paper{transform:translateY(-64px)}
+.letter.show{animation:pop .5s}
+.note{position:relative}
+.note::before{content:"";position:absolute;top:-10px;left:50%;width:58px;height:20px;transform:translateX(-50%) rotate(-3deg);background:rgba(247,168,181,.75);border-radius:3px}
+#buddy{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));z-index:3;padding:0;background:none;border:0;box-shadow:none;
+  animation:bob 2.4s ease-in-out infinite}
+#buddy:active{transform:scale(.92)}
+#buddy .eyes{transform-box:fill-box;transform-origin:center;animation:blink 4s infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+#bubble{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:100px;z-index:3;max-width:200px;background:var(--paper);border:2px solid var(--navy);
+  border-radius:16px 16px 4px 16px;padding:8px 14px;font-family:var(--display);color:var(--navy);opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none}
+#bubble.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.flame,#buddy,#buddy .eyes{animation:none}.env-paper,.env-flap{transition:none}}
