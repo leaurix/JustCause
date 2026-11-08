@@ -63,14 +63,6 @@ requestAnimationFrame(tick);
 const $=id=>document.getElementById(id);
 const DAY=864e5,today=new Date();today.setHours(0,0,0,0);
 
-/* counters: together since Sep 1 2026, birthday Nov 10 */
-const since=new Date(2026,8,1);
-$("together").textContent=Math.max(0,Math.round((today-since)/DAY));
-let bd=new Date(today.getFullYear(),10,10);if(bd<today)bd=new Date(today.getFullYear()+1,10,10);
-const left=Math.round((bd-today)/DAY);
-if(left===0){$("bday").textContent="Today!";$("bdayLbl").textContent="happy birthday, my love"}
-else{$("bday").textContent=left;$("bdayLbl").textContent=left===1?"day until your birthday":"days until your birthday"}
-
 /* effects canvas on top: tap hearts, confetti, sparkles */
 const fx=$("fx"),fc=fx.getContext("2d");let fxp=[];
 function fxSize(){fx.width=innerWidth*dpr;fx.height=innerHeight*dpr;fc.setTransform(dpr,0,0,dpr,0,0)}
@@ -93,41 +85,54 @@ function sparkle(x,y){if(reduce)return;fxp.push({k:"s",x,y,vx:(Math.random()-.5)
   fc.globalAlpha=1;fxp=fxp.filter(p=>p.l>0);requestAnimationFrame(fxTick)})();
 
 /* tap anywhere: little heart pop; mouse: sparkle trail */
-addEventListener("pointerdown",e=>{if(!e.target.closest("#gate"))hearts(e.clientX,e.clientY,7)});
+addEventListener("pointerdown",e=>{if(!e.target.closest("#gate,#scratch,#no"))hearts(e.clientX,e.clientY,7)});
 let lastS=0;addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;const t=performance.now();if(t-lastS>40){sparkle(e.clientX,e.clientY);lastS=t}});
 
 /* opening the gate also drops confetti */
 $("open").addEventListener("click",()=>confetti(120));
 
-/* cake: blow out candles */
-const candles=[...document.querySelectorAll(".candle")];
-candles.forEach(c=>c.addEventListener("click",e=>{e.stopPropagation();if(c.classList.contains("out"))return;
-  c.classList.add("out");const r=c.getBoundingClientRect();sparkle(r.left+r.width/2,r.top);sparkle(r.left+r.width/2,r.top+6);
-  const lit=candles.filter(x=>!x.classList.contains("out")).length;
-  if(lit){$("cakeHint").textContent=lit+" more to go"}
-  else{$("cakeHint").textContent="Wish made! I hope every bit of it comes true ♥";confetti(160);
-    setTimeout(()=>{candles.forEach(x=>x.classList.remove("out"));$("cakeHint").textContent="tap the candles to make another wish"},6000)}}));
+/* scratch card */
+(function(){const cv=$("scratch"),c=cv.getContext("2d"),box=$("scratchBox");let done=false,down=false,n=0;
+  function paint(){const r=box.getBoundingClientRect();cv.width=r.width*dpr;cv.height=r.height*dpr;c.setTransform(dpr,0,0,dpr,0,0);
+    const g=c.createLinearGradient(0,0,r.width,r.height);g.addColorStop(0,"#f7a8b5");g.addColorStop(1,"#ec8a9a");c.fillStyle=g;c.fillRect(0,0,r.width,r.height);
+    c.fillStyle="#fff";c.font="800 22px Sniglet, sans-serif";c.textAlign="center";c.fillText("scratch here ♥",r.width/2,r.height/2+8);
+    c.globalAlpha=.5;for(let i=0;i<14;i++){const x=Math.random()*r.width,y=Math.random()*r.height;c.beginPath();c.arc(x,y,3,0,7);c.fill()}c.globalAlpha=1}
+  paint();
+  function rub(e){if(!down||done)return;const r=cv.getBoundingClientRect();c.globalCompositeOperation="destination-out";
+    c.beginPath();c.arc(e.clientX-r.left,e.clientY-r.top,20,0,7);c.fill();c.globalCompositeOperation="source-over";
+    if(++n%10===0){const d=c.getImageData(0,0,cv.width,cv.height).data;let clear=0;for(let i=3;i<d.length;i+=64)if(d[i]===0)clear++;
+      if(clear/(d.length/64)>.45){done=true;cv.classList.add("done");$("scratchHint").textContent="told you ♥";
+        const b=box.getBoundingClientRect();hearts(b.left+b.width/2,b.top+b.height/2,16)}}}
+  cv.addEventListener("pointerdown",e=>{down=true;cv.setPointerCapture(e.pointerId);rub(e)});
+  cv.addEventListener("pointermove",rub);addEventListener("pointerup",()=>down=false);})();
 
-/* love jar */
-const REASONS=["The way you laugh at your own jokes before you finish them.","Your hand hearts. Every single one.",
-  "You make lazy afternoons feel like a holiday.","Your pout. Still undefeated.","You are my favorite notification.",
-  "How you make ordinary days feel soft and bright.","Your smile fixes everything in about two seconds.",
-  "You are my calm place.","Strawberry picnics with you are the best plans ever.","You make me want to be better, every day.",
-  "Even your silly faces are cute.","You are my good thing."];
-let bag=[];
-$("jar").addEventListener("click",e=>{if(!bag.length)bag=REASONS.slice().sort(()=>Math.random()-.5);
-  const j=$("jar"),r=$("reason");j.classList.remove("wiggle");void j.offsetWidth;j.classList.add("wiggle");
-  r.textContent=bag.pop();r.classList.remove("pop");void r.offsetWidth;r.classList.add("pop");
-  const b=j.getBoundingClientRect();hearts(b.left+b.width/2,b.top+20,10)});
+/* bouquet */
+const PET=["#e2334a","#f7a8b5","#ffd36b","#ec8a9a","#fff","#b8405a"];let fcount=0;
+function flowerSVG(col){const t=Math.random()*3|0;
+  if(t===0){let p="";for(let i=0;i<5;i++){const a=i*72*Math.PI/180;p+=`<circle cx="${20+Math.cos(a)*9}" cy="${20+Math.sin(a)*9}" r="8" fill="${col}" stroke="#1e2a4a" stroke-width="2"/>`}
+    return p+`<circle cx="20" cy="20" r="6" fill="#ffd36b" stroke="#1e2a4a" stroke-width="2"/>`}
+  if(t===1)return `<path d="M8 14q4 18 12 22q8-4 12-22l-6 6-6-10-6 10z" fill="${col}" stroke="#1e2a4a" stroke-width="2" stroke-linejoin="round"/>`;
+  return `<path d="M20 34c-14-9-12-22-4-22 2 0 4 2 4 4 0-2 2-4 4-4 8 0 10 13-4 22z" fill="${col}" stroke="#1e2a4a" stroke-width="2"/>`}
+$("garden").addEventListener("click",e=>{const box=$("blooms");if(fcount>=12){box.innerHTML="";fcount=0}
+  const f=document.createElement("div");f.className="fl";const h=70+Math.random()*90,x=22+Math.random()*56;
+  f.style.left=x+"%";f.style.height=h+"px";f.style.transform=`rotate(${(x-50)*.5}deg)`;f.style.zIndex=Math.round(200-h);
+  f.innerHTML=`<span class="stem" style="height:${h}px"></span><span class="leaf" style="bottom:${h*.35}px;left:21px"></span><svg viewBox="0 0 40 40" style="bottom:${h-20}px">${flowerSVG(PET[Math.random()*PET.length|0])}</svg>`;
+  box.appendChild(f);fcount++;
+  const msgs={1:"one for your smile",3:"three for your pout",5:"keep going",8:"almost a bouquet",12:"a whole bouquet, just for you ♥ (tap to start over)"};
+  if(msgs[fcount])$("gardenHint").textContent=msgs[fcount];if(fcount===12)confetti(80)});
 
-/* envelope */
-$("env").addEventListener("click",()=>{const env=$("env"),L=$("letter");const open=!env.classList.contains("open");
-  env.classList.toggle("open",open);env.setAttribute("aria-expanded",open);$("envHint").textContent=open?"tap to close":"tap to open";
-  if(open){setTimeout(()=>{L.hidden=false;L.classList.add("show")},500);const b=env.getBoundingClientRect();hearts(b.left+b.width/2,b.top,12)}
-  else{L.hidden=true;L.classList.remove("show")}});
+/* do you love me */
+(function(){const no=$("no"),yes=$("yes"),ask=$("ask");let dodges=0,said=false;
+  const TEASE=["Are you sure?","Try again 🙂","Wrong button","Nope, not allowed","The other one!","Pretty please?"];
+  function run(e){if(said)return;e.preventDefault();const a=ask.getBoundingClientRect(),nb=no.getBoundingClientRect();
+    no.classList.add("run");no.style.left=Math.random()*(a.width-nb.width-16)+8+"px";no.style.top=Math.random()*(a.height-nb.height-16)+8+"px";
+    dodges++;yes.style.transform=`scale(${Math.min(1+dodges*.15,2)})`;$("askQ").textContent=TEASE[dodges%TEASE.length]}
+  no.addEventListener("pointerenter",run);no.addEventListener("pointerdown",run);no.addEventListener("click",run);
+  yes.addEventListener("click",()=>{said=true;$("askQ").textContent="I knew it. I love you more ♥";no.hidden=true;yes.style.transform="scale(1)";
+    yes.textContent="♥ ♥ ♥";confetti(150);const b=yes.getBoundingClientRect();hearts(b.left+b.width/2,b.top,18)});})();
 
 /* strawberry buddy */
 const LINES=["Hi Esther!","You look cute today.","He really likes you, you know.","Boop!","Have you smiled yet?",
-  "Strawberry hug!","You are berry special.","Go open the envelope!","Try the love jar!"];
+  "Strawberry hug!","You are berry special.","Scratch the card!","Grow some flowers!","Just press Yes."];
 let bt;$("buddy").addEventListener("click",()=>{const b=$("bubble");b.textContent=LINES[Math.random()*LINES.length|0];b.classList.add("on");
   clearTimeout(bt);bt=setTimeout(()=>b.classList.remove("on"),2600)});
